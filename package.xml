@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.8.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Stagehand_PHP_Lexer</name>
+ <channel>pear.piece-framework.com</channel>
+ <summary>A class for a PHP lex.</summary>
+ <description>A class for a PHP lex.</description>
+ <lead>
+  <name>KUMAKURA Yousuke</name>
+  <user>kumatch</user>
+  <email>kumatch@gmail.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-05-13</date>
+ <time>15:56:36</time>
+ <version>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
+ <notes>
+The initial release of Stagehand_PHP_Lexer.
+ </notes>
+ <contents>
+  <dir baseinstalldir="/" name="/">
+   <dir name="src">
+    <dir name="Stagehand">
+     <dir name="PHP">
+      <dir name="Lexer">
+       <file name="Token.php" role="php">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir> <!-- /src/Stagehand/PHP/Lexer -->
+      <file name="Lexer.php" role="php">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir> <!-- /src/Stagehand/PHP -->
+    </dir> <!-- /src/Stagehand -->
+   </dir> <!-- /src -->
+   <dir name="tests">
+    <dir name="Stagehand">
+     <dir name="PHP">
+      <dir name="LexerTest">
+       <file name="example.php" role="test">
+        <tasks:replace from="@package_version@" to="version" type="package-info" />
+       </file>
+      </dir> <!-- /tests/Stagehand/PHP/LexerTest -->
+      <file name="LexerTest.php" role="test">
+       <tasks:replace from="@package_version@" to="version" type="package-info" />
+      </file>
+     </dir> <!-- /tests/Stagehand/PHP -->
+    </dir> <!-- /tests/Stagehand -->
+    <file name="prepare.php" role="test">
+     <tasks:replace from="@package_version@" to="version" type="package-info" />
+    </file>
+   </dir> <!-- /tests -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.3</min>
+   </pearinstaller>
+   <package>
+    <name>Stagehand_PHP_Parser</name>
+    <channel>pear.piece-framework.com</channel>
+    <min>0.1.0</min>
+   </package>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2009-05-13</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
+   <notes>
+The initial release of Stagehand_PHP_Lexer.
+   </notes>
+  </release>
+ </changelog>
+</package>
