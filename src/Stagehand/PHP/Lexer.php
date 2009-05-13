@@ -83,7 +83,7 @@ class Stagehand_PHP_Lexer
      *
      * @param string $filename  PHP script filename.
      */
-    function __construct($filename)
+    public function __construct($filename)
     {
         $this->_position = 0;
         $this->_tokens = token_get_all(file_get_contents($filename));
@@ -98,7 +98,7 @@ class Stagehand_PHP_Lexer
      * @param object $yylval
      * @return mixed
      */
-    function yylex(&$yylval)
+    public function yylex(&$yylval)
     {
         while (1) {
             $currentPosition = $this->_position;
@@ -112,23 +112,19 @@ class Stagehand_PHP_Lexer
             if (!is_array($token)) {
                 $yylval = new Stagehand_PHP_Lexer_Token($token, $currentPosition);
                 return ord($yylval);
-            } else {
-                $name = token_name($token[0]);
-                $yylval = new Stagehand_PHP_Lexer_Token($token[1], $currentPosition);
-
-                $ignoreList = array('T_OPEN_TAG', 'T_CLOSE_TAG', 'T_WHITESPACE',
-                                    'T_COMMENT', 'T_DOC_COMMENT', 'T_INLINE_HTML', 
-                                    );
-                if (in_array($name, $ignoreList)) {
-                    continue;
-                }
-
-                if ($name === 'T_DOUBLE_COLON') {
-                    return Stagehand_PHP_Parser::T_PAAMAYIM_NEKUDOTAYIM;
-                }
-
-                return constant("Stagehand_PHP_Parser::{$name}");
             }
+
+            $name = token_name($token[0]);
+            if ($this->_isIgnoreToken($name)) {
+                continue;
+            }
+
+            $yylval = new Stagehand_PHP_Lexer_Token($token[1], $currentPosition);
+            if ($name === 'T_DOUBLE_COLON') {
+                return Stagehand_PHP_Parser::T_PAAMAYIM_NEKUDOTAYIM;
+            }
+
+            return constant("Stagehand_PHP_Parser::{$name}");
         }
     }
 
@@ -142,7 +138,7 @@ class Stagehand_PHP_Lexer
      * @param integer $endPosition    number of end position
      * @return array
      */
-    function getTokens($startPosition = 0, $endPosition = -1)
+    public function getTokens($startPosition = 0, $endPosition = -1)
     {
         if ($endPosition < 0) {
             $endPosition = count($this->_tokens) - 1;
@@ -169,6 +165,28 @@ class Stagehand_PHP_Lexer
     /**#@+
      * @access private
      */
+
+    // }}}
+    // {{{ _isIgnoreToken()
+
+    /**
+     * Token is ignore of not.
+     *
+     * @param string $tokenName
+     * @return array
+     */
+    private function _isIgnoreToken($tokenName)
+    {
+        $ignoreList = array('T_OPEN_TAG', 'T_CLOSE_TAG', 'T_WHITESPACE',
+                            'T_COMMENT', 'T_DOC_COMMENT', 'T_INLINE_HTML', 
+                            );
+
+        if (in_array($tokenName, $ignoreList)) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**#@-*/
 
