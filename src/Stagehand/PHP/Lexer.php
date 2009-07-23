@@ -119,26 +119,12 @@ class Stagehand_PHP_Lexer
                 return ord($yylval);
             }
 
+            $this->_catchDocComment($token);
+
             $name = token_name($token[0]);
-
-            if ($name === 'T_DOC_COMMENT') {
-                $this->_latestDocComment = $token[1];
-            }
-
             if ($this->_isIgnoreToken($name)) {
                 continue;
             }
-
-            if ($name === 'T_CLASS'
-                || $name === 'T_FUNCTION'
-                ) {
-                array_push($this->_docComments, $this->_latestDocComment);
-            }
-
-            if ($name === 'T_STRING') {
-                $this->_latestDocComment = null;
-            }
-
 
             $yylval = new Stagehand_PHP_Lexer_Token($token[1], $currentPosition);
             if ($name === 'T_DOUBLE_COLON') {
@@ -220,6 +206,36 @@ class Stagehand_PHP_Lexer
         }
 
         return false;
+    }
+
+    // }}}
+    // {{{ _catchDocDomment()
+
+    /**
+     * Catches a document comment.
+     *
+     * @param string $token    A token.
+     * @return array
+     */
+    private function _catchDocComment($token)
+    {
+        $name = token_name($token[0]);
+
+        if ($name === 'T_DOC_COMMENT') {
+            $this->_latestDocComment = $token[1];
+            return;
+        }
+
+        if ($name === 'T_CLASS'
+            || $name === 'T_FUNCTION'
+                  ) {
+            array_push($this->_docComments, $this->_latestDocComment);
+            return;
+        }
+
+        if ($name === 'T_STRING') {
+            $this->_latestDocComment = null;
+        }
     }
 
     /**#@-*/
