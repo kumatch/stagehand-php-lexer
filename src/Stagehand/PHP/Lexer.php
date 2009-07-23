@@ -67,7 +67,12 @@ class Stagehand_PHP_Lexer
      */
 
     private $_position;
-    private $_tokens;
+    private $_tokens = array();
+    private $_docComments = array();
+    private $_latestDocComment;
+
+    private $_classBlock;
+    private $_functionBlock;
 
     /**#@-*/
 
@@ -115,9 +120,25 @@ class Stagehand_PHP_Lexer
             }
 
             $name = token_name($token[0]);
+
+            if ($name === 'T_DOC_COMMENT') {
+                $this->_latestDocComment = $token[1];
+            }
+
             if ($this->_isIgnoreToken($name)) {
                 continue;
             }
+
+            if ($name === 'T_CLASS'
+                || $name === 'T_FUNCTION'
+                ) {
+                array_push($this->_docComments, $this->_latestDocComment);
+            }
+
+            if ($name === 'T_STRING') {
+                $this->_latestDocComment = null;
+            }
+
 
             $yylval = new Stagehand_PHP_Lexer_Token($token[1], $currentPosition);
             if ($name === 'T_DOUBLE_COLON') {
@@ -152,6 +173,19 @@ class Stagehand_PHP_Lexer
         }
 
         return $tokens;
+    }
+
+    // }}}
+    // {{{ getLatestDocComment()
+
+    /**
+     * Gets a latest doc comment.
+     *
+     * @return string
+     */
+    public function getLatestDocComment()
+    {
+        return array_pop($this->_docComments);
     }
 
     /**#@-*/
