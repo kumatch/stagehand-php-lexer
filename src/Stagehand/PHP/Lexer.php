@@ -71,8 +71,7 @@ class Stagehand_PHP_Lexer
     private $_docComments = array();
     private $_latestDocComment;
 
-    private $_classBlock;
-    private $_functionBlock;
+    private $_isDeclarStep;
 
     /**#@-*/
 
@@ -116,6 +115,11 @@ class Stagehand_PHP_Lexer
 
             if (!is_array($token)) {
                 $yylval = new Stagehand_PHP_Lexer_Token($token, $currentPosition);
+
+                if ($yylval->getValue() === ';') {
+                    $this->_isDeclarStep = false;
+                }
+
                 return ord($yylval);
             }
 
@@ -190,7 +194,7 @@ class Stagehand_PHP_Lexer
     // {{{ _isIgnoreToken()
 
     /**
-     * Token is ignore of not.
+     * Returns whether the token is ignore or not.
      *
      * @param string $tokenName
      * @return array
@@ -226,16 +230,41 @@ class Stagehand_PHP_Lexer
             return;
         }
 
-        if ($name === 'T_CLASS'
-            || $name === 'T_FUNCTION'
-                  ) {
+        if ($this->_isMemberModifier($name)) {
+            $this->_isDeclarStep = true;
+        }
+
+        if ($name === 'T_CLASS' || $name === 'T_FUNCTION') {
             array_push($this->_docComments, $this->_latestDocComment);
+            $this->_latestDocComment = null;
+            $this->_isDeclarStep = false;
             return;
         }
 
-        if ($name === 'T_STRING') {
+        if ($this->_isDeclarStep && $name === 'T_VARIABLE') {
+            array_push($this->_docComments, $this->_latestDocComment);
             $this->_latestDocComment = null;
+            return;
         }
+    }
+
+    /**
+     * Returns whether the token is member modifier or not.
+     *
+     * @param string $tokenName
+     * @return array
+     */
+    private function _isMemberModifier($tokenName)
+    {
+        $memberModifiers = array('T_PUBLIC', 'T_PROTECTED', 'T_PRIVATE',
+                                 'T_STATIC', 'T_ABSTRACT', 'T_FINAL',
+                                 'T_VAR'
+                                 );
+        if (in_array($tokenName, $memberModifiers)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**#@-*/
