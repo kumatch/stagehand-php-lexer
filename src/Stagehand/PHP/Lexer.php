@@ -234,7 +234,10 @@ class Stagehand_PHP_Lexer
             $this->_isDeclarStep = true;
         }
 
-        if ($name === 'T_CLASS' || $name === 'T_FUNCTION') {
+        if ($name === 'T_CLASS'
+            || $name === 'T_INTERFACE'
+            || $name === 'T_FUNCTION'
+            ) {
             array_push($this->_docComments, $this->_latestDocComment);
             $this->_latestDocComment = null;
             $this->_isDeclarStep = false;
